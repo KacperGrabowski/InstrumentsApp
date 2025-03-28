@@ -7,10 +7,10 @@ namespace InstrumentsApp.Services {
     public static class CartService {
         private static Cart? _cart;
         public static Cart? GetCart(UserService userService) {
-            var context = Program.ServiceProvider.GetService<DataContext>();
+            var context = Program.ServiceProvider.GetRequiredService<DataContext>();
             try {
                 if (!userService.IsAuthenticated()) return null;
-                var cart = context?.Cart.Include(i => i.Items).FirstOrDefault(x => x.UserId == userService.GetLoggedUserId());
+                var cart = context.Cart.Include(i => i.Items).FirstOrDefault(x => x.UserId == userService.GetLoggedUserId());
                 if (cart == null) {
                     cart = new Cart() { UserId = userService.GetLoggedUserId() };
                     context.Add(cart);
@@ -29,7 +29,7 @@ namespace InstrumentsApp.Services {
                 message = $"{instrument.Name} is out of stock!";
                 return false;
             }
-            else if (instrument.Stock <= _cart.Items.FirstOrDefault(x => x.Instrument == instrument)?.Quantity) {
+            else if (instrument.Stock <= _cart?.Items.FirstOrDefault(x => x.Instrument == instrument)?.Quantity) {
                 message = $"The cart amount is already same value as in stock.";
                 return false;
             };

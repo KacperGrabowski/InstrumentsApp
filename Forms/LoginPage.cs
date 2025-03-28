@@ -3,7 +3,7 @@
 namespace InstrumentsApp.Forms {
     public partial class LoginPage : UserControl {
         private readonly UserService _userService;
-        public event Action UserLoggedIn;
+        public event Action? UserLoggedIn;
         public LoginPage(UserService userService) {
             _userService = userService;
             InitializeComponent();

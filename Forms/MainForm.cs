@@ -4,10 +4,10 @@ using System.Windows.Forms;
 
 namespace InstrumentsApp.Forms {
     public partial class MainForm : Form {
-        private readonly UserService? _userService;
+        private readonly UserService _userService;
         public MainForm() {
             InitializeComponent();
-            _userService = Program.ServiceProvider.GetService<UserService>();
+            _userService = Program.ServiceProvider.GetRequiredService<UserService>();
             ShowHomePage();
             UpdateUserStatus();
         }
@@ -28,7 +28,7 @@ namespace InstrumentsApp.Forms {
             }
             ShowOrdersPage();
         }
-        private void btnLoginClick(object sender, EventArgs e) => ShowLoginPage();
+        private void btnLoginClick(object? sender, EventArgs e) => ShowLoginPage();
         private void ShowLoginPage() {
             contentPanel.Controls.Clear();
             var LoginPage = new LoginPage(_userService);
@@ -58,17 +58,17 @@ namespace InstrumentsApp.Forms {
         }
         private void UpdateUserStatus() {
             btnLogin.Click -= btnLoginClick;
-            btnLogin.Click -= btnLogoutClick;
+            btnLogin.Click -= BtnLogoutClick;
             if (_userService.IsAuthenticated()) {
                 btnLogin.Text = "Logout";
-                btnLogin.Click += btnLogoutClick;
+                btnLogin.Click += BtnLogoutClick;
             }
             else {
                 btnLogin.Text = "Login/Register";
                 btnLogin.Click += btnLoginClick;
             }
         }
-        private void btnLogoutClick(object sender, EventArgs e) {
+        private void BtnLogoutClick(object? sender, EventArgs e) {
             _userService.Logout();
             Utilities.MessageBox.Show("Logout successful");
             ShowLoginPage();

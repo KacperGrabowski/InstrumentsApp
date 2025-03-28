@@ -6,18 +6,18 @@ using Microsoft.Extensions.DependencyInjection;
 namespace InstrumentsApp.Forms {
     public partial class HomePage : UserControl {
         private readonly Cart? _cart;
-        private readonly DataContext? _context;
-        private readonly UserService? _userService;
+        private readonly DataContext _context;
+        private readonly UserService _userService;
         public HomePage() {
             InitializeComponent();
-            _context = Program.ServiceProvider.GetService<DataContext>();
-            _userService = Program.ServiceProvider.GetService<UserService>();
+            _context = Program.ServiceProvider.GetRequiredService<DataContext>();
+            _userService = Program.ServiceProvider.GetRequiredService<UserService>();
             _cart = CartService.GetCart(_userService);
             LoadInstruments();
         }
 
         private void LoadInstruments() {
-            var instruments = _context?.Instruments.ToList();
+            var instruments = _context.Instruments.ToList();
             foreach (var instrument in instruments) {
                 if (instrument != null) AddInstrumentCard(instrument);
             }
@@ -88,7 +88,7 @@ namespace InstrumentsApp.Forms {
             }
             try {
                 var itemEntry = _context.ItemEntry.FirstOrDefault(x => x.Instrument == instrument && x.Cart == _cart);
-                if (itemEntry == null) _cart.Items.Add(new ItemEntry { Instrument = instrument, Cart = _cart, Price = instrument.Price, Quantity = 1 });
+                if (itemEntry == null) _cart?.Items.Add(new ItemEntry { Instrument = instrument, Cart = _cart, Price = instrument.Price, Quantity = 1 });
                 else itemEntry.Quantity++;
                 Utilities.MessageBox.Show($"{instrument.Name} added to cart!");
                 _context.SaveChanges();

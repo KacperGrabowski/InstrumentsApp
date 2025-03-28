@@ -5,12 +5,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace InstrumentsApp.Forms {
     public partial class OrdersPage : UserControl {
-        private DataContext _context;
-        private List<Order> _orders;
+        private readonly DataContext _context;
+        private readonly List<Order> _orders;
 
         public OrdersPage() {
             InitializeComponent();
-            _context = Program.ServiceProvider.GetService<DataContext>();
+            _context = Program.ServiceProvider.GetRequiredService<DataContext>();
             _orders = _context.Orders.Include(o => o.Items).ThenInclude(oi => oi.Instrument).ToList();
             LoadOrders();
         }
@@ -67,8 +67,8 @@ namespace InstrumentsApp.Forms {
 
         private void ShowOrderDetails(Order order) {
             var detailsPage = new OrderDetailsPage(order);
-            this.Parent.Controls.Add(detailsPage);
-            this.Parent.Controls.Remove(this);
+            this.Parent?.Controls.Add(detailsPage);
+            this.Parent?.Controls.Remove(this);
         }
     }
 }

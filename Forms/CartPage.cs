@@ -6,13 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 namespace InstrumentsApp.Forms {
     public partial class CartPage : UserControl {
         private readonly Cart? _cart;
-        private readonly DataContext? _context;
-        private readonly UserService? _userService;
+        private readonly DataContext _context;
+        private readonly UserService _userService;
         private readonly Dictionary<int, Panel> _itemPanels = [];
         public CartPage() {
             InitializeComponent();
-            _context = Program.ServiceProvider.GetService<DataContext>();
-            _userService = Program.ServiceProvider.GetService<UserService>();
+            _context = Program.ServiceProvider.GetRequiredService<DataContext>();
+            _userService = Program.ServiceProvider.GetRequiredService<UserService>();
             _cart = CartService.GetCart(_userService);
             if ((_cart?.Items.Count ?? 0) == 0) {
                 Utilities.MessageBox.Show("No items in cart!");
